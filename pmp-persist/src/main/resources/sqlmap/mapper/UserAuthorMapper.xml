@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shenxin.core.control.mapper.UserAuthorMapper">
+
+    <resultMap id="BaseResultMap" type="com.shenxin.core.control.entity.SysFunctionDAO">
+        <id column="ID" property="id" jdbcType="DECIMAL"/>
+        <result column="NAME" property="name" jdbcType="VARCHAR"/>
+        <result column="PARENT_ID" property="parentId" jdbcType="DECIMAL"/>
+        <result column="GRADE" property="grade" jdbcType="CHAR"/>
+        <result column="URI" property="uri" jdbcType="VARCHAR"/>
+        <result column="CODE" property="code" jdbcType="VARCHAR"/>
+        <result column="STATUS" property="status" jdbcType="CHAR"/>
+        <result column="ORDER_BY" property="orderBy" jdbcType="DECIMAL"/>
+        <result column="LOGO" property="logo" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="RoleResultMap" type="com.shenxin.core.control.entity.SysRoleDAO">
+        <id column="ID" property="id" jdbcType="VARCHAR"/>
+        <result column="NAME" property="name" jdbcType="VARCHAR"/>
+        <result column="DISABLE_TAG" property="disableTag" jdbcType="CHAR"/>
+        <result column="REMARK" property="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getAuthorByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        <![CDATA[
+        SELECT
+        F.ID, F.NAME, F.PARENT_ID, F.GRADE, F.URI, F.CODE, F.STATUS, F.ORDER_BY, F.LOGO
+        FROM
+        SYS_USR U,TBL_BTS_SYS_USR_ROLE UR,SYS_ROLE R,TBL_BTS_SYS_ROLE_FUNC RF,SYS_FUNCTION F
+        WHERE
+        U.ID = #{userId}
+        AND U.ID = UR.USR_ID
+        AND R.ID = UR.ROLE_ID
+        AND R.ID = RF.ROLE_ID
+        AND F.ID = RF.FUNC_ID
+        ]]>
+    </select>
+
+    <select id="getRoleByUserId" parameterType="java.lang.String" resultMap="RoleResultMap">
+        <![CDATA[
+        SELECT
+        R.ID, R.NAME, R.DISABLE_TAG, R.REMARK
+        FROM
+        SYS_USR U,TBL_BTS_SYS_USR_ROLE UR,SYS_ROLE R
+        WHERE
+        U.ID = #{userId}
+        AND U.ID = UR.USR_ID
+        AND R.ID = UR.ROLE_ID
+         ]]>
+    </select>
+</mapper>

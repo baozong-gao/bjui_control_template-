@@ -1,0 +1,519 @@
+--- 公司表
+create table wy_company(
+    id  number not null PRIMARY KEY,
+    company_name    varchar2(128) not null,
+    org_type    char(2) not null,
+    aptitude_code   varchar2(64) not null,
+    company_address varchar2(256) not null,
+    company_domain  varchar2(128),
+    corporation varchar2(32) not null,
+    email   varchar2(64) not null,
+    org_code    varchar2(32) ,
+    phone   varchar2(16) not null,
+    zip_code    number ,
+    grade   char(1) not null,
+    father_company  number not null,
+    charge_org_acct_id  varchar2(32) not null,
+    charge_org_acct_name    varchar(256) not null,
+    charge_org_bank_code    varchar2(8) not null,
+    charge_org_branch_code  varchar2(16) not null,
+    charge_org_branch_name  varchar2(256) not null,
+    remark  varchar2(256),
+    ct_user_id  varchar2(20) not null,
+    created_date timestamp default sysdate,
+    up_user_id  varchar2(20) not null,
+    update_date timestamp default sysdate,
+    deleted char(1) default '0'
+);
+
+COMMENT ON TABLE wy_company  IS '公司表';
+comment on column  wy_company.id is 'id';
+comment on column  wy_company.company_name is '公司名称';
+comment on column  wy_company.org_type is '公司类型  00:物业公司 01:收款公司';
+comment on column  wy_company.aptitude_code is '资质证书编号';
+comment on column  wy_company.company_address is '公司地址';
+comment on column  wy_company.company_domain is '公司域名';
+comment on column  wy_company.corporation is '公司法人';
+comment on column  wy_company.email is 'email邮箱';
+comment on column  wy_company.org_code is '组织机构代码';
+comment on column  wy_company.phone is '联系电话';
+comment on column  wy_company.zip_code is '邮政编码';
+comment on column  wy_company.grade is '公司级别  1:-级，2：二级，3：三级';
+comment on column  wy_company.father_company is '上一级公司';
+comment on column  wy_company.charge_org_acct_id is '收取账户ID';
+comment on column  wy_company.charge_org_acct_name is '收取账户名称';
+comment on column  wy_company.charge_org_bank_code is '收取银行编码';
+comment on column  wy_company.charge_org_branch_code is '收取银行联行号';
+comment on column  wy_company.charge_org_branch_name is '收取银行联行名称';
+comment on column  wy_company.remark is '备注';
+comment on column  wy_company.ct_user_id is '创建人Id';
+comment on column  wy_company.created_date is '创建时间';
+comment on column  wy_company.up_user_id is '修改人Id';
+comment on column  wy_company.update_date is '修改时间';
+comment on column  wy_company.deleted is '逻辑删除  0未删除 1删除';
+
+
+create sequence wy_company_ID_SEQ
+      minvalue 10000001
+      maxvalue 99999999
+      start with 10000001
+      increment by 1
+      cache 20
+      cycle;
+------------------------
+------------------------
+---附件表
+create table wy_attach_files(
+    id  number not null PRIMARY KEY,
+    company_id    number not null,
+    attach_type    char(1) not null,
+    attach_src   blob not null,
+    ct_user_id  varchar2(20) not null,
+    created_date timestamp default sysdate,
+    up_user_id  varchar2(20) not null,
+    update_date timestamp default sysdate,
+    deleted char(1) default '0'
+);
+
+COMMENT ON TABLE wy_attach_files  IS '附件表';
+comment on column  wy_attach_files.id is 'id';
+comment on column  wy_attach_files.company_id is '公司';
+comment on column  wy_attach_files.attach_type is '附件类型  1:logo';
+comment on column  wy_attach_files.attach_src is '附件';
+comment on column  wy_attach_files.ct_user_id is '创建人Id';
+comment on column  wy_attach_files.created_date is '创建时间';
+comment on column  wy_attach_files.up_user_id is '修改人Id';
+comment on column  wy_attach_files.update_date is '修改时间';
+comment on column  wy_attach_files.deleted is '逻辑删除  0未删除 1删除';
+
+
+create sequence wy_attach_files_ID_SEQ
+      minvalue 10000001
+      maxvalue 99999999
+      start with 10000001
+      increment by 1
+      cache 20
+      cycle;
+------------------------
+------------------------
+---费用类型表
+create table wy_fee_type(
+    id  number not null PRIMARY KEY,
+    business_type    char(2) not null,
+    fee_type    char(2) not null,
+    fee_desc   varchar(256) ,
+    ct_user_id  varchar2(20) not null,
+    created_date timestamp default sysdate,
+    up_user_id  varchar2(20) not null,
+    update_date timestamp default sysdate,
+    deleted char(1) default '0'
+);
+
+COMMENT ON TABLE wy_fee_type  IS '费用类型表';
+comment on column  wy_fee_type.id is 'id';
+comment on column  wy_fee_type.business_type is '业务类型';
+comment on column  wy_fee_type.fee_type is '收费类型';
+comment on column  wy_fee_type.fee_desc is '类型描述';
+comment on column  wy_fee_type.ct_user_id is '创建人Id';
+comment on column  wy_fee_type.created_date is '创建时间';
+comment on column  wy_fee_type.up_user_id is '修改人Id';
+comment on column  wy_fee_type.update_date is '修改时间';
+comment on column  wy_fee_type.deleted is '逻辑删除  0未删除 1删除';
+
+create unique index wy_fee_type_UK on wy_fee_type (business_type, fee_type);
+
+
+create sequence wy_fee_type_ID_SEQ
+      minvalue 10000001
+      maxvalue 99999999
+      start with 10000001
+      increment by 1
+      cache 20
+      cycle;
+------------------------
+------------------------
+---业态费用类型表
+create table wy_compus_fee_type(
+    id  number not null PRIMARY KEY,
+    compus_id    number not null,
+    fee_type_id    number not null,
+    charge_company_id number not null,
+    remark   varchar(256),
+    ct_user_id  varchar2(20) not null,
+    created_date timestamp default sysdate,
+    up_user_id  varchar2(20) not null,
+    update_date timestamp default sysdate,
+    deleted char(1) default '0'
+);
+
+COMMENT ON TABLE wy_compus_fee_type  IS '业态费用类型表';
+comment on column  wy_compus_fee_type.id is 'id';
+comment on column  wy_compus_fee_type.compus_id is '液态ID';
+comment on column  wy_compus_fee_type.fee_type_id is '费用类型ID';
+comment on column  wy_compus_fee_type.remark is '描述';
+comment on column  wy_compus_fee_type.ct_user_id is '创建人Id';
+comment on column  wy_compus_fee_type.created_date is '创建时间';
+comment on column  wy_compus_fee_type.up_user_id is '修改人Id';
+comment on column  wy_compus_fee_type.update_date is '修改时间';
+comment on column  wy_compus_fee_type.deleted is '逻辑删除  0未删除 1删除';
+
+create unique index wy_compus_fee_type_UK on wy_compus_fee_type (compus_id, fee_type_id);
+
+
+create sequence wy_compus_fee_type_ID_SEQ
+      minvalue 10000001
+      maxvalue 99999999
+      start with 10000001
+      increment by 1
+      cache 20
+      cycle;
+------------------------
+------------------------
+---业态表
+create table wy_campus(
+    id  number not null PRIMARY KEY,
+    company_id  number not null,
+    campus_name varchar2(128) not null,
+    campus_type char(2) not null,
+    linkman varchar2(32) not null,
+    phone   varchar2(16) not null,
+    remark  varchar2(256) ,
+    reserve1    varchar2(64) ,
+    reserve2    varchar2(256) ,
+    reserve3    varchar2(512) ,
+    ct_user_id  varchar2(20) not null,
+    created_date timestamp default sysdate,
+    up_user_id  varchar2(20) not null,
+    update_date timestamp default sysdate,
+    deleted char(1) default '0'
+);
+
+COMMENT ON TABLE wy_campus  IS '业态表';
+comment on column  wy_campus.id is 'id';
+comment on column  wy_campus.company_id is '隶属公司';
+comment on column  wy_campus.campus_name is '业态名称';
+comment on column  wy_campus.campus_type is '业态类型';
+comment on column  wy_campus.linkman is '联系人';
+comment on column  wy_campus.phone is '联系电话';
+comment on column  wy_campus.remark is '备注';
+comment on column  wy_campus.reserve1 is '保留域1';
+comment on column  wy_campus.reserve2 is '保留域2';
+comment on column  wy_campus.reserve3 is '保留域3';
+comment on column  wy_campus.ct_user_id is '创建人Id';
+comment on column  wy_campus.created_date is '创建时间';
+comment on column  wy_campus.up_user_id is '修改人Id';
+comment on column  wy_campus.update_date is '修改时间';
+comment on column  wy_campus.deleted is '逻辑删除  0未删除 1删除';
+
+
+
+create sequence wy_campus_ID_SEQ
+      minvalue 10000001
+      maxvalue 99999999
+      start with 10000001
+      increment by 1
+      cache 20
+      cycle;
+------------------------
+------------------------
+---房间表
+create table wy_room(
+    id  number not null PRIMARY KEY,
+    campus_id   number not null,
+    area_name   varchar2(64) not null,
+    build_name  varchar2(32) not null,
+    build_no    varchar2(4) not null,
+    floors  varchar2(4) not null,
+    room_no varchar2(256) not null,
+    house_no    varchar2(256) not null,
+    states  char(2) not null,
+    adress  varchar2(256) not null,
+    ct_user_id  varchar2(20) not null,
+    created_date timestamp default sysdate,
+    up_user_id  varchar2(20) not null,
+    update_date timestamp default sysdate,
+    deleted char(1) default '0'
+);
+
+COMMENT ON TABLE wy_room  IS '房间表';
+comment on column  wy_room.id is 'id';
+comment on column  wy_room.campus_id is '隶属业态';
+comment on column  wy_room.area_name is '小区名';
+comment on column  wy_room.build_name is '单元名';
+comment on column  wy_room.build_no is '楼号';
+comment on column  wy_room.floors is '楼层';
+comment on column  wy_room.room_no is '房间号';
+comment on column  wy_room.house_no is '户号';
+comment on column  wy_room.states is '房间状态';
+comment on column  wy_room.adress is '详细地址';
+comment on column  wy_room.ct_user_id is '创建人Id';
+comment on column  wy_room.created_date is '创建时间';
+comment on column  wy_room.up_user_id is '修改人Id';
+comment on column  wy_room.update_date is '修改时间';
+comment on column  wy_room.deleted is '逻辑删除  0未删除 1删除';
+
+
+
+create sequence wy_room_ID_SEQ
+      minvalue 10000001
+      maxvalue 99999999
+      start with 10000001
+      increment by 1
+      cache 20
+      cycle;
+------------------------
+------------------------
+---酒店合同表
+create table wy_contracts_hotel(
+    id  number not null PRIMARY KEY,
+    compus_id   number not null,
+    contract_id varchar2(32) not null,
+    contracts_type  char(1) not null,
+    person_type char(1) not null,
+    person_name varchar2(16) not null,
+    sex char(1) not null,
+    nationality varchar2(32) ,
+    linkman_name    varchar2(16) not null,
+    address varchar2(256) ,
+    phone   varchar2(16) not null,
+    birthday    timestamp   not null,
+    email   varchar2(64) ,
+    card_type   varchar2(4) not null,
+    card_no varchar2(32) not null,
+    contract_beg    timestamp   not null,
+    contract_end    timestamp   not null,
+    tenancy_type    char(2) not null,
+    electronic_contract     varchar2(64) ,
+    invoice_msg varchar2(256) ,
+    contracts_status    char(1) not null,
+    ct_user_id  varchar2(20) not null,
+    created_date timestamp default sysdate,
+    up_user_id  varchar2(20) not null,
+    update_date timestamp default sysdate,
+    deleted char(1) default '0'
+);
+
+COMMENT ON TABLE wy_contracts_hotel  IS '酒店合同表';
+comment on column  wy_contracts_hotel.id is 'id';
+comment on column  wy_contracts_hotel.compus_id is '液态编号 ';
+comment on column  wy_contracts_hotel.contract_id is '合同编号 ';
+comment on column  wy_contracts_hotel.contracts_type is '合同类型 1-居民住宅合同2-商务租用合同3-其他合同类型';
+comment on column  wy_contracts_hotel.person_type is '签订人类型 1-房产人2-租户3-商户4-公司承租5-其他';
+comment on column  wy_contracts_hotel.person_name is '签订人姓名 ';
+comment on column  wy_contracts_hotel.sex is '性别 1-男，2-女';
+comment on column  wy_contracts_hotel.nationality is '签订人国籍 ';
+comment on column  wy_contracts_hotel.linkman_name is '联系人 ';
+comment on column  wy_contracts_hotel.address is '联系地址 ';
+comment on column  wy_contracts_hotel.phone is '联系电话 ';
+comment on column  wy_contracts_hotel.birthday is '出生年月 ';
+comment on column  wy_contracts_hotel.email is '电子邮箱 ';
+comment on column  wy_contracts_hotel.card_type is '证件类型 1-身份证2-护照3-台胞证4-军官证5-其他';
+comment on column  wy_contracts_hotel.card_no is '证件号码 ';
+comment on column  wy_contracts_hotel.contract_beg is '合同开始时间 ';
+comment on column  wy_contracts_hotel.contract_end is '合同结束时间 ';
+comment on column  wy_contracts_hotel.tenancy_type is '租赁模式 ';
+comment on column  wy_contracts_hotel.electronic_contract is '电子合同项 ';
+comment on column  wy_contracts_hotel.invoice_msg is '发票信息 ';
+comment on column  wy_contracts_hotel.contracts_status is '合同状态 1-有效2-待生效3-过期4-其他';
+comment on column  wy_contracts_hotel.ct_user_id is '创建人Id';
+comment on column  wy_contracts_hotel.created_date is '创建时间';
+comment on column  wy_contracts_hotel.up_user_id is '修改人Id';
+comment on column  wy_contracts_hotel.update_date is '修改时间';
+comment on column  wy_contracts_hotel.deleted is '逻辑删除  0未删除 1删除';
+
+
+
+create sequence wy_contracts_hotel_ID_SEQ
+      minvalue 10000001
+      maxvalue 99999999
+      start with 10000001
+      increment by 1
+      cache 20
+      cycle;
+------------------------
+------------------------
+---合同用户表
+create table wy_contracts_users(
+    id  number not null PRIMARY KEY,
+    contracts_id    number not null,
+    user_id number not null,
+    begin_date  timestamp not null,
+    end_date    timestamp not null,
+    user_name   varchar2(16) not null,
+    user_phone  varchar2(16) not null,
+    ct_user_id  varchar2(20) not null,
+    created_date timestamp default sysdate,
+    up_user_id  varchar2(20) not null,
+    update_date timestamp default sysdate,
+    deleted char(1) default '0'
+);
+
+COMMENT ON TABLE wy_contracts_users  IS '合同用户表';
+comment on column  wy_contracts_users.id is 'id';
+comment on column  wy_contracts_users.contracts_id is '合同信息id';
+comment on column  wy_contracts_users.user_id is '用户id';
+comment on column  wy_contracts_users.begin_date is '入住开始时间';
+comment on column  wy_contracts_users.end_date is '入住结束时间';
+comment on column  wy_contracts_users.user_name is '用户姓名';
+comment on column  wy_contracts_users.user_phone is '用户电话';
+comment on column  wy_contracts_users.ct_user_id is '创建人Id';
+comment on column  wy_contracts_users.created_date is '创建时间';
+comment on column  wy_contracts_users.up_user_id is '修改人Id';
+comment on column  wy_contracts_users.update_date is '修改时间';
+comment on column  wy_contracts_users.deleted is '逻辑删除  0未删除 1删除';
+
+
+
+create sequence wy_contracts_users_ID_SEQ
+      minvalue 10000001
+      maxvalue 99999999
+      start with 10000001
+      increment by 1
+      cache 20
+      cycle;
+------------------------
+------------------------
+---酒店合同表
+create table wy_contract_fee_type(
+    id  number not null PRIMARY KEY,
+    contract_id number not null,
+    compus_fee_type_id  number not null,
+    charge_mode varchar2(8) not null,
+    charge_type varchar2(8) not null,
+    charge_interval varchar2(8) not null,
+    charge_formula  varchar2(128) not null,
+    overdue_flag    char(1) ,
+    overdue_formula varchar2(128) ,
+    ct_user_id  varchar2(20) not null,
+    created_date timestamp default sysdate,
+    up_user_id  varchar2(20) not null,
+    update_date timestamp default sysdate,
+    deleted char(1) default '0'
+);
+
+COMMENT ON TABLE wy_contract_fee_type  IS '酒店合同表';
+comment on column  wy_contract_fee_type.id is 'id';
+comment on column  wy_contract_fee_type.contract_id is '合同ID';
+comment on column  wy_contract_fee_type.compus_fee_type_id is '费用类型ID';
+comment on column  wy_contract_fee_type.charge_mode is '费用收取模式';
+comment on column  wy_contract_fee_type.charge_type is '费用收取方式';
+comment on column  wy_contract_fee_type.charge_interval is '收费周期';
+comment on column  wy_contract_fee_type.charge_formula is '费用计算方式';
+comment on column  wy_contract_fee_type.overdue_flag is '是否存在滞纳金';
+comment on column  wy_contract_fee_type.overdue_formula is '滞纳金计算方式';
+comment on column  wy_contract_fee_type.ct_user_id is '创建人Id';
+comment on column  wy_contract_fee_type.created_date is '创建时间';
+comment on column  wy_contract_fee_type.up_user_id is '修改人Id';
+comment on column  wy_contract_fee_type.update_date is '修改时间';
+comment on column  wy_contract_fee_type.deleted is '逻辑删除  0未删除 1删除';
+
+
+
+create sequence wy_contract_fee_type_ID_SEQ
+      minvalue 10000001
+      maxvalue 99999999
+      start with 10000001
+      increment by 1
+      cache 20
+      cycle;
+------------------------
+------------------------
+---账单租金配置表
+create table wy_bill_rental(
+    id  number not null PRIMARY KEY,
+    rental  number(8,2) not null,
+    deposit number(8,2) not null,
+    charge_mode char(2) not null,
+    bill_cycle  char(1) not null,
+    management_fee  number(8,2) not null,
+    bill_date   timestamp   not null,
+    water_fee   number(8,2) not null,
+    electricity_fee number(8,2) not null,
+    TV_fee  number(8,2) not null,
+    internet_fee    number(8,2) not null,
+    parking_fee number(8,2) not null,
+    costom_fee  number(8,2) ,
+    reserve1    varchar2(64) ,
+    reserve2    varchar2(256) ,
+    reserve3    varchar2(512) ,
+    ct_user_id  varchar2(20) not null,
+    created_date timestamp default sysdate,
+    up_user_id  varchar2(20) not null,
+    update_date timestamp default sysdate,
+    deleted char(1) default '0'
+);
+
+COMMENT ON TABLE wy_bill_rental  IS '账单租金配置表';
+comment on column  wy_bill_rental.id is 'id';
+comment on column  wy_bill_rental.rental is '租金 ';
+comment on column  wy_bill_rental.deposit is '押金 ';
+comment on column  wy_bill_rental.charge_mode is '收费模式 ';
+comment on column  wy_bill_rental.bill_cycle is '账单周期 1.月付2.季度2.半年4.年付';
+comment on column  wy_bill_rental.management_fee is '物业费 ';
+comment on column  wy_bill_rental.bill_date is '账单日 ';
+comment on column  wy_bill_rental.water_fee is '水费(单价/升) ';
+comment on column  wy_bill_rental.electricity_fee is '电费(单价/度) ';
+comment on column  wy_bill_rental.TV_fee is '有线电视费 ';
+comment on column  wy_bill_rental.internet_fee is '宽带费 ';
+comment on column  wy_bill_rental.parking_fee is '停车费 ';
+comment on column  wy_bill_rental.costom_fee is '自定义费用 ';
+comment on column  wy_bill_rental.reserve1 is '保留域1 ';
+comment on column  wy_bill_rental.reserve2 is '保留域2 ';
+comment on column  wy_bill_rental.reserve3 is '保留域3 ';
+comment on column  wy_bill_rental.ct_user_id is '创建人Id';
+comment on column  wy_bill_rental.created_date is '创建时间';
+comment on column  wy_bill_rental.up_user_id is '修改人Id';
+comment on column  wy_bill_rental.update_date is '修改时间';
+comment on column  wy_bill_rental.deleted is '逻辑删除  0未删除 1删除';
+
+
+
+create sequence wy_bill_rental_ID_SEQ
+      minvalue 10000001
+      maxvalue 99999999
+      start with 10000001
+      increment by 1
+      cache 20
+      cycle;
+------------------------
+------------------------
+---合同房屋关联表
+create table wy_contracts_rooms(
+    id  number not null PRIMARY KEY,
+    contract_id  number not null,
+    room_id number not null,
+    reserve1    varchar2(64) ,
+    reserve2    varchar2(256) ,
+    reserve3    varchar2(512) ,
+    ct_user_id  varchar2(20) not null,
+    created_date timestamp default sysdate,
+    up_user_id  varchar2(20) not null,
+    update_date timestamp default sysdate,
+    deleted char(1) default '0'
+);
+
+COMMENT ON TABLE wy_contracts_rooms  IS '合同房屋关联表';
+comment on column  wy_contracts_rooms.id is 'id';
+comment on column  wy_contracts_rooms.contract_id is '合同 ';
+comment on column  wy_contracts_rooms.room_id is '房间 ';
+comment on column  wy_contracts_rooms.reserve1 is '保留域1 ';
+comment on column  wy_contracts_rooms.reserve2 is '保留域2 ';
+comment on column  wy_contracts_rooms.reserve3 is '保留域3 ';
+comment on column  wy_contracts_rooms.ct_user_id is '创建人Id';
+comment on column  wy_contracts_rooms.created_date is '创建时间';
+comment on column  wy_contracts_rooms.up_user_id is '修改人Id';
+comment on column  wy_contracts_rooms.update_date is '修改时间';
+comment on column  wy_contracts_rooms.deleted is '逻辑删除  0未删除 1删除';
+
+
+
+create sequence wy_contracts_rooms_ID_SEQ
+      minvalue 10000001
+      maxvalue 99999999
+      start with 10000001
+      increment by 1
+      cache 20
+      cycle;
+------------------------
+------------------------
+---

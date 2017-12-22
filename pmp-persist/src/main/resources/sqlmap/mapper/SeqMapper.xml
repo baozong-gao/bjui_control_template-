@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shenxin.core.control.mapper.SeqMapper" >
+
+  <select id="getUsrSeq" resultType="java.lang.Integer">
+    <![CDATA[ select SYS_USR_ID_SEQ.nextval from dual]]>
+  </select>
+
+  <select id="getFunctionSeq" resultType="java.lang.Integer">
+    <![CDATA[ select SYS_FUNCTION_ID_SEQ.nextval from dual]]>
+  </select>
+
+  <select id="getRoleSeq" resultType="java.lang.Integer">
+    <![CDATA[select SYS_ROLE_ID_SEQ.nextval from dual]]>
+  </select>
+
+</mapper>
